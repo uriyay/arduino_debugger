@@ -10,26 +10,31 @@ void setup() {
 
 void handleCommand(byte command[])
 {
-  Serial.println(command[0]);
+  /*Serial.println(command[0]);
   Serial.println(command[1]);
   Serial.println(command[2]);
-  Serial.println(command[3]);
+  Serial.println(command[3]);*/
   if (command[0] & OUT_MODE) {
     Serial.println("out");
     //extract pin and value
-    int pin_num = (int) command[2];
-    int value_num = (int) command[3];
+    int pin_num = (int) command[1];
+    int value_num = (int) command[2];
+    value_num = (value_num << 8) + (int)command[3];
+    Serial.print("value_num = ");
+    Serial.println(value_num);
     pinMode(pin_num, OUTPUT);
     if (command[0] & DIGITAL_MODE) {
+      Serial.println("digital write");
       digitalWrite(pin_num, value_num);
     }
     else if (command[0] & ANALOG_MODE) {
+      Serial.println("analog write");
       analogWrite(pin_num, value_num);
     }
   }
   else if (command[0] & IN_MODE) {
     Serial.println("in");
-    int pin_num = (int) command[2];
+    int pin_num = (int) command[1];
     int result = 0;
     pinMode(pin_num, INPUT);
     if (command[0] & DIGITAL_MODE) {
